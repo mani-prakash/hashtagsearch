@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html ng-app="twitterApp">
+<head>
+    <title>AngularJS Instant Tweet Search Application</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="oauth.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+	  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-sanitize.js"></script>
+    <!--script src="firebase.2.4.0.js"></script-->
+    <script src="app.js"></script>
+    <script src="controllers.js"></script>
+    <script src="services.js"></script>
+    <style>
+        .container {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        #results .row {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/3.0.3/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/2.0.1/angularfire.min.js"></script>
+    <!--script src="https://www.gstatic.com/firebasejs/3.0.5/firebase-database.js"></script-->
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyA3bsU7z7XCH8aD2JKsIMte4TL3q8U1GWc",
+            authDomain: "testtwitter-776fb.firebaseapp.com",
+            databaseURL: "https://testtwitter-776fb.firebaseio.com",
+            storageBucket: "",
+        };
+        var firebaseApp = firebase.initializeApp(config);
+    </script>
+</head>
+<body>
+    <div class="container" ng-controller="TwitterController">
+        <h1>Instant hashTag Search Application</h1>
+        <div class="row">
+            <div class="col-xs-6">
+                <button ng-click="connectButton()" id="connectButton" type="button" class="btn btn-primary">Connect Twitter</button>
+                <button ng-click="searchHashTab()" id="getHashButton" type="button" class="btn btn-info" style="display:none;">hashTag</button>
+                <button ng-click="signOut()" id="signOut" type="buttogn" class="btn btn-link" style="display:none;">Sign Out</button>
+			</div>
+			<div class="col-xs-6">
+				<input type="text" ng-model='hashTag' class="form-control" id="searchBox" placeholder="Enter search term here" ng-show="connectedTwitter"/>
+			</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12" id="results">
+                <div class="row" ng-repeat="tweet in databaseService.HashTagList">
+                    <div class="col-xs-2 col-sm-1">
+                        <img ng-src="{{tweet.user.profile_image_url}}" class="img-circle">
+                    </div>
+                    <div class="col-xs-10 col-sm-11">
+                        <small>{{tweet.user.name}}</small><br> <span ng-bind-html="tweet.text"></span>
+                    </div>
+
+                </div>
+
+                <div ng-show="rateLimitError">
+                  Rate limit reached. You are making too many requests.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
