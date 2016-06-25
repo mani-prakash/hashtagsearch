@@ -31,13 +31,10 @@ angular.module('twitterApp.services', []).factory('twitterService', function($q)
             var deferred = $q.defer();
             var url='/1.1/search/tweets.json?q=%23'+hashTag;
             var promise = authorizationResult.get(url).done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
-                //when the data is retrieved resolve the deferred object
                 deferred.resolve(data);
             }).fail(function(err) {
-                //in case of any error we reject the promise with the error object
                 deferred.reject(err);
             });
-            //return the promise of the deferred object
             return deferred.promise;
         }
     }

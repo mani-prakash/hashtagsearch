@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html ng-app="twitterApp">
 <head>
-    <title>AngularJS Instant Tweet Search Application</title>
+    <title>hash Search Application</title>
+    <link rel="icon" href="twitter-128.png" type="image/gif" sizes="16x16">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -42,12 +43,12 @@
         <h1>Instant hashTag Search Application</h1>
         <div class="row">
             <div class="col-xs-6">
+                <input type="text" ng-model='hashTag' class="form-control" id="searchBox" placeholder="Enter hashtag here" style="display:none;"/>
+            </div>
+            <div class="col-xs-6">
                 <button ng-click="connectButton()" id="connectButton" type="button" class="btn btn-primary">Connect Twitter</button>
                 <button ng-click="searchHashTab()" id="getHashButton" type="button" class="btn btn-info" style="display:none;">hashTag</button>
                 <button ng-click="signOut()" id="signOut" type="buttogn" class="btn btn-link" style="display:none;">Sign Out</button>
-			</div>
-			<div class="col-xs-6">
-				<input type="text" ng-model='hashTag' class="form-control" id="searchBox" placeholder="Enter search term here" ng-show="connectedTwitter"/>
 			</div>
         </div>
         <div class="row">

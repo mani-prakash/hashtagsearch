@@ -24,7 +24,7 @@ app.controller('TwitterController', function($scope,$q, twitterService, database
             if (twitterService.isReady()) {
                 //if the authorization is successful, hide the connect button and display the tweets
                 $('#connectButton').fadeOut(function(){
-                    $('#getTimelineButton, #signOut').fadeIn();
+                    $('#getHashButton, #signOut, #searchBox' ).fadeIn();
 					          $scope.connectedTwitter = true;
                 });
             } else {
@@ -47,7 +47,7 @@ app.controller('TwitterController', function($scope,$q, twitterService, database
     $scope.signOut = function() {
         twitterService.clearCache();
         $scope.tweets.length = 0;
-        $('#getHashButton, #signOut').fadeOut(function(){
+        $('#getHashButton, #signOut, #searchBox').fadeOut(function(){
             $('#connectButton').fadeIn();
 			$scope.$apply(function(){$scope.connectedTwitter=false})
         });
@@ -58,7 +58,8 @@ app.controller('TwitterController', function($scope,$q, twitterService, database
         $('#connectButton').hide();
         //$('#getTimelineButton, #signOut').show();
         $('#getHashButton').show();
-        $('#getHashButton, #signOut').show();
+        $('#signOut').show();
+        $('#searchBox').show();
      		$scope.connectedTwitter = true;
     }
 
