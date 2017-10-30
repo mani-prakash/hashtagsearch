@@ -1,7 +1,6 @@
 angular.module('twitterApp.services', []).factory('twitterService', function($q) {
 
     var authorizationResult = false;
-
     return {
         initialize: function() {
             OAuth.initialize('T47YxDcvXQcVOGQD7ZRgAjO6dAU', {cache:true});
@@ -16,9 +15,6 @@ angular.module('twitterApp.services', []).factory('twitterService', function($q)
                 if (!error) {
                     authorizationResult = result;
                     deferred.resolve();
-                } else {
-                    //do something if there's an error
-
                 }
             });
             return deferred.promise;
@@ -38,19 +34,24 @@ angular.module('twitterApp.services', []).factory('twitterService', function($q)
             return deferred.promise;
         }
     }
+
 });
 
 
 angular.module('twitterApp.services').factory('databaseService', function($q, $firebaseArray){
     var databaseService = {};
-    console.log(firebaseApp);
-    var base_ref = firebaseApp.database().ref('/twitter');//new Firebase('https://testzophop.firebaseio.com/development/queue');//"https://testtwitter-776fb.firebaseio.com/works");
+    var base_ref = firebaseApp.database().ref('/twitter');
     databaseService.hashTagRef = null;
     databaseService.isFirebaseThere = false;
-    console.log(base_ref);
     databaseService.tempTwitterData = [];
     databaseService.HashTagList = [];
-    databaseService.setHashTagList = function (data) {
+    function sortTweets(x , y)
+    {
+        var xDate = new Date(x['created_at']);
+        var yDate = new Date(y['created_at']);
+        return (xDate.getTime()-yDate.getTime()) * -1;
+    }
+    function setHashTagList(data) {
         data = (data === null)?{}:data;
         var keys = Object.keys(data);
         for(var i=0;i<keys.length;i++)
@@ -66,25 +67,27 @@ angular.module('twitterApp.services').factory('databaseService', function($q, $f
             var isThere = false;
             for (var j = 0; j < databaseService.HashTagList.length ; j++)
             {
-                if (data['id'] ===databaseService.HashTagList[j]['id']) {
+                if (data[ltI]['id']===databaseService.HashTagList[j]['id']) {
+                    console.log('isThere');
                     isThere = true;
                 }
             }
-            if(isThere) {
-                ltI--;
+            if(!isThere) {
+                databaseService.HashTagList.push(data[ltI]);
+                saveList.push(data[ltI]);
             }
-            else{
-                break;
-            }
-        }
-        while(ltI>=0)
-        {
-            databaseService.HashTagList.push(data[ltI]);
-            saveList.push(data[ltI]);
             ltI--;
         }
-        databaseService.saveData(saveList);
+        saveData(saveList);
+        databaseService.HashTagList.sort(sortTweets);
         databaseService.tempTwitterData = [];
+    }
+    function saveData(list)
+    {
+        for(var i=0;i<list.length;i++)
+        {
+            databaseService.hashTagRef.push(list[i]);
+        }
     }
     databaseService.addTwitterData = function (data) {
         databaseService.tempTwitterData = databaseService.tempTwitterData.concat(data);
@@ -103,15 +106,13 @@ angular.module('twitterApp.services').factory('databaseService', function($q, $f
         databaseService.hashTagRef = base_ref.child(hashTag);
         databaseService.hashTagRef.once('value').then( function(snapshot) {
             databaseService.isFirebaseThere = true;
-            databaseService.setHashTagList(snapshot.val());
+            setHashTagList(snapshot.val());
         });
     };
-    databaseService.saveData = function(list)
-    {
-        for(var i=0;i<list.length;i++)
-        {
-            databaseService.hashTagRef.push(list[i]);
-        }
+    databaseService.clearCache = function(){
+        databaseService.tempTwitterData = [];
+        databaseService.HashTagList = [];
+        databaseService.isFirebaseThere = false;
     }
     return databaseService;
 });

@@ -13,7 +13,11 @@ app.controller('TwitterController', function($scope,$q, twitterService, database
     $scope.searchHashTab = function() {
         clearTimeout($scope.timeOut);
         var hashTag = $scope.hashTag;
-        $scope.savedhashTag = $scope.hashTag;
+        if(hashTag.charAt(0)==='#')
+        {
+            hashTag = hashTag.substring(1);
+        }
+        $scope.savedhashTag = hashTag;
         databaseService.setHashTag(hashTag);
         getTwitterData();
     };
@@ -39,13 +43,14 @@ app.controller('TwitterController', function($scope,$q, twitterService, database
         twitterService.getHashTags(hashTag).then(function(data) {
             //$scope.tweets = $scope.tweets.concat(data['statuses']);
             databaseService.addTwitterData(data['statuses']);
-            $scope.timeOut = setTimeout(getTwitterData ,3000);
+            $scope.timeOut = setTimeout(getTwitterData ,10000);
         },function(){
             $scope.rateLimitError = true;
         });
     }
     $scope.signOut = function() {
         twitterService.clearCache();
+        databaseService.clearCache();
         $scope.tweets.length = 0;
         $('#getHashButton, #signOut, #searchBox').fadeOut(function(){
             $('#connectButton').fadeIn();
